@@ -59,8 +59,6 @@ namespace BPCalculator
                     Console.WriteLine("Your blood pressure is Low");
                     return BPCategory.Low;
                 }
-
-
             }
         }
     }
