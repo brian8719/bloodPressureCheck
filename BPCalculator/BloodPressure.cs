@@ -19,6 +19,14 @@ namespace BPCalculator
         public const int DiastolicMin = 40;
         public const int DiastolicMax = 100;
 
+        // Lower thresholds for each of the range bands i.e. if you score above this score, you're in that category
+        public const int DiastolicHighBand = 90;
+        public const int DiastolicPreHighBand = 80;
+        public const int DiastolicIdealBand = 60;
+        public const int SystolicHighBand = 140;
+        public const int SystolicPreHighBand = 120;
+        public const int SystolicIdealBand = 90;
+
         [Range(SystolicMin, SystolicMax, ErrorMessage = "Invalid Systolic Value")]
         public int Systolic { get; set; }                       // mmHG
 
@@ -31,7 +39,28 @@ namespace BPCalculator
             get
             {
                 // implement as part of project
-                throw new NotImplementedException("not implemented yet");        
+                if ( Diastolic >= DiastolicHighBand || Systolic >= SystolicHighBand)
+                {
+                    Console.WriteLine("Your blood pressure is High");
+                    return BPCategory.High;
+                }
+                else if (Diastolic >= DiastolicPreHighBand || Systolic >= SystolicPreHighBand)
+                {
+                    Console.WriteLine("Your blood pressure is Pre-High");
+                    return BPCategory.PreHigh;
+                }
+                else if (Diastolic >= DiastolicIdealBand || Systolic >= SystolicIdealBand)
+                {
+                    Console.WriteLine("Your blood pressure is Ideal");
+                    return BPCategory.Ideal;
+                }
+                else
+                {
+                    Console.WriteLine("Your blood pressure is Low");
+                    return BPCategory.Low;
+                }
+
+
             }
         }
     }
