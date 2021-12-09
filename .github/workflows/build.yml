@@ -1,0 +1,56 @@
+name: BuildAndTest
+
+env:
+  AZURE_WEBAPP_NAME: BPCalculatorBOR2021   # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: 'publish'      # set this to the path to your web app project, defaults to the repository root
+  AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.BPCalculatorBOR2021_7b8c }}
+  CONFIGURATION: Release
+  DOTNET_CORE_VERSION: 5.0.x
+  WORKING_DIRECTORY: BPCalculator
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: windows-latest
+    #environment: production
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+
+      # - name: Run unit tests
+      #   run: dotnet test bmiUnitTestProject/bmiUnitTestProject.csproj --no-restore --collect "Code coverage" -l:trx
+    
+      # - name: Publish Unit Test Results
+      #   uses: dorny/test-reporter@v1
+      #   with:
+      #     artifact: ''
+      #     name: MS Tests                  
+      #     path: '**.trx'
+      #     reporter: 'dotnet-trx'                     
+
+      - name: Publish
+        run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+
+  # Deploy to Azure Web apps
+      - name: Run Azure webapp deploy action using publish profile credentials
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE  }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: webapp
+        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
