@@ -27,16 +27,37 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
 
-      # - name: Run unit tests
+      - name: Run unit tests
       #   run: dotnet test bmiUnitTestProject/bmiUnitTestProject.csproj --no-restore --collect "Code coverage" -l:trx
+        run: dotnet test BPCalculatorTests/BPCalculatorTests.csproj --no-restore --collect "Code coverage" -l:trx
+     
     
-      # - name: Publish Unit Test Results
-      #   uses: dorny/test-reporter@v1
-      #   with:
-      #     artifact: ''
-      #     name: MS Tests                  
-      #     path: '**.trx'
-      #     reporter: 'dotnet-trx'                     
+      - name: Publish Unit Test Results
+        uses: dorny/test-reporter@v1
+        with:
+          artifact: ''
+          name: MS Tests                  
+          path: '**.trx'
+          reporter: 'dotnet-trx'      
+      
+      # TODO BDD Tests
+
+      # TODO Check Code Quality
+
+      # TODO Check dependencies OWASP / Whitesource Bolt
+
+      # TODO Deploy to QA
+        # Run E2E (Selenium)
+
+      # TODO Deploy to Staging 
+        # Run performance tests (k6 cloud)
+        # Simple PEN tests (pasive scanning)
+        
+      # TODO Deploy to prod
+        # blue/green, canary
+        
+      # TODO Telemetry
+
 
       - name: Publish
         run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp' 
