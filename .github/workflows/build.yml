@@ -29,10 +29,11 @@ jobs:
 
       - name: Run unit tests
       #   run: dotnet test bmiUnitTestProject/bmiUnitTestProject.csproj --no-restore --collect "Code coverage" -l:trx
-        run: dotnet test BPCalculatorTests/BPCalculatorTests.csproj --no-restore --collect "Code coverage" -l:trx
+        run: |
+          dotnet test BPCalculatorTests/BPCalculatorTests.csproj --no-restore --collect "Code coverage" -l:trx
+          mkdir tempDir
+          dotnet pack --no-build -c Release --output tempDir
      
-      # Create artifact to hold results of unit tests
-      - run: mkdir tempDir
       - name: Publish Unit Test Results
         uses: dorny/test-reporter@v1
         with:
