@@ -32,7 +32,7 @@ jobs:
       - run: |
          dotnet add package SpecFlow.Plus.LivingDocPlugin
          dotnet tool install --global SpecFlow.Plus.LivingDoc.cli
-         LivingDoc test-assembly \BpAcceptTests\bin\Debug\netcoreapp3.1\BpAcceptTests.dll -t \BpAcceptTests\bin\Debug\netcoreapp3.1\TestExecution.json
+         LivingDoc test-assembly \BpAcceptTests\BpAcceptTests.dll -t \BpAcceptTests\TestExecution.json
       #- uses: actions/cryptic-wizard/run-specflow-tests@v1.2.0
       #  with:
       #    test-assembly-path: BpAcceptTests/bin/Release/netcoreapp3.1
