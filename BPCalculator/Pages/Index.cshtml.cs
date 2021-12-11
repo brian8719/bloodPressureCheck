@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Diagnostics.CodeAnalysis;
 
 // page model
 
 namespace BPCalculator.Pages
 {
+    [ExcludeFromCodeCoverage]
     public class BloodPressureModel : PageModel
     {
         [BindProperty]                              // bound on POST

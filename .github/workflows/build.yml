@@ -29,21 +29,48 @@ jobs:
       - name: Run Acceptance tests
         run: dotnet test BpAcceptTests/BpAcceptTests.csproj --collect "Code coverage" -l:trx
 
-      #- name: Specflow LivngDoc # Not able to find test assembly path
-      #  run: |
-         #dotnet add package SpecFlow.Plus.LivingDocPlugin
-         #dotnet tool install --global SpecFlow.Plus.LivingDoc.cli
-         #LivingDoc test-assembly *\BpAcceptTests.dll -t *\TestExecution.json
+      - name: Check env variables values
+        run: |
+          echo "GITHUB_ACTION_PATH is $GITHUB_ACTION_PATH"
+          echo "GITHUB_WORKFLOW is GITHUB_WORKFLOW"
+          echo "GITHUB_ACTION is GITHUB_ACTION"
+          echo "GITHUB_REPOSITORY is GITHUB_REPOSITORY"
+          echo "GITHUB_EVENT_PATH is GITHUB_EVENT_PATH"
+          echo "GITHUB_WORKSPACE is GITHUB_WORKSPACE"
+
 
       - uses: actions/upload-artifact@v2
         if: success() || failure()
         with:
           name: TestResultsZip
           path: D:\a\bloodPressureCheck\bloodPressureCheck\BpAcceptTests\TestResults\
-      #- uses: actions/upload-artifact@v2
-      #  if: success() || failure()
-      #  with:
-      #    path: :\a\bloodPressureCheck\bloodPressureCheck\BpAcceptTests\TestResults\*\*.coverage
+          # TODO Swap this out for an environment variable
+
+      #- name: Specflow LivngDoc # Not able to point to correct test assembly path
+      #  run: |
+         #dotnet add package SpecFlow.Plus.LivingDocPlugin
+         #dotnet tool install --global SpecFlow.Plus.LivingDoc.cli
+         #LivingDoc test-assembly *\BpAcceptTests.dll -t *\TestExecution.json
+
+      - name: OWASP Dependency check
+        uses: dependency-check/Dependency-Check_Action@main
+        id: Depcheck
+        with:
+          project: 'BloodPressureChecker'
+          path: '.'
+          format: 'HTML'    
+          args: >
+            --failOnCVSS 7            
+          # fail if CVSS score (CVE scoring system) is High >=7
+          
+      - name: Upload Test results
+        uses: actions/upload-artifact@master
+        with:
+           name: Depcheck report
+           path: ${{github.workspace}}/reports
+          
+
+
 
       #- name: Build # Probably safe to delete
       #  run: dotnet build --configuration Release --no-restore 

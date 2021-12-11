@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BPCalculator
 {
+    [ExcludeFromCodeCoverage]
     public static class Program // Static added due to code smell S1118
     {
         public static void Main(string[] args)
