@@ -2,9 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <!-- Set the CheckEolTargetFramework property to false to fix the warning -->
-    <!-- Thank you https://andrewlock.net/fixing-build-warning-netsdk1138-when-building-end-of-life-projects-with-dotnet-5/ <CheckEolTargetFramework>false</CheckEolTargetFramework>-->
-    
 	<!-- Prevent 2 main methods (entry points) being created https://github.com/microsoft/vstest/issues/2711 -->
 	<GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
