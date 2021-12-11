@@ -1,0 +1,35 @@
+# OWASP Dependency checker
+# based on doicker image built nightly
+# https://github.com/dependency-check/Dependency-Check_Action
+
+name: OWASP Dependency Checker       
+  
+on:
+  workflow_dispatch:                  # manually triggered
+
+jobs:
+  dependency_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore 
+
+      - name: Depcheck
+        uses: dependency-check/Dependency-Check_Action@main
+        id: Depcheck
+        with:
+          project: 'BloodPressureChecker'
+          path: '.'
+          format: 'HTML'    
+          args: >
+            --failOnCVSS 7            
+          # fail if CVSS score (CVE scoring system) is High >=7
+          
+      - name: Upload Test results
+        uses: actions/upload-artifact@master
+        with:
+           name: Depcheck report
+           path: ${{github.workspace}}/reports
