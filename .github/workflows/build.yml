@@ -26,23 +26,25 @@ jobs:
         run: dotnet test BPCalculatorTests/BPCalculatorTests.csproj --collect "Code coverage" -l:trx
         # restore not required as it's carried out by the previous job        
 
-      - name: Run Acceptance tests      
-        run: |
-         dotnet add package SpecFlow.Plus.LivingDocPlugin
-         dotnet tool install --global SpecFlow.Plus.LivingDoc.cli
-         dotnet test BpAcceptTests/BpAcceptTests.csproj --collect "Code coverage" -l:trx
+      - name: Run Acceptance tests
+        run: dotnet test BpAcceptTests/BpAcceptTests.csproj --collect "Code coverage" -l:trx
+
+      #- name: Specflow LivngDoc # Not finding path
+      #  run: |
+         #dotnet add package SpecFlow.Plus.LivingDocPlugin
+         #dotnet tool install --global SpecFlow.Plus.LivingDoc.cli
          #LivingDoc test-assembly *\BpAcceptTests.dll -t *\TestExecution.json
 
       - uses: actions/upload-artifact@v2
         if: success() || failure()
         with:
-          name: SpecflowTestResults
-          path: ./TestResults/*.trx
+          #name: TestResults
+          path: D:\a\bloodPressureCheck\bloodPressureCheck\BpAcceptTests\TestResults\*.trx
       - uses: actions/upload-artifact@v2
         if: success() || failure()
         with:
-          name: SpecflowTestResults
-          path: /*TestResults/*
+          name: TestResults
+          path: :\a\bloodPressureCheck\bloodPressureCheck\BpAcceptTests\TestResults\*\*.coverage
 
       #- name: Build
       #  run: dotnet build --configuration Release --no-restore 
