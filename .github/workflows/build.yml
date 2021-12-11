@@ -58,9 +58,24 @@ jobs:
       # call build with restore to get rid of project.assets.json file missing errors
       
 
-      # TODO Check Code Quality
-
-      # TODO Check dependencies OWASP / Whitesource Bolt
+      # CD Section      
+      
+      - name: Depcheck
+        uses: dependency-check/Dependency-Check_Action@main
+        id: Depcheck
+        with:
+          project: 'BloodPressureChecker'
+          path: '.'
+          format: 'HTML'    
+          args: >
+            --failOnCVSS 7            
+          # fail if CVSS score (CVE scoring system) is High >=7
+          
+      - name: Upload Depcheck Test results
+        uses: actions/upload-artifact@master
+        with:
+           name: Depcheck report
+           path: ${{github.workspace}}/reports
 
       # TODO Deploy to QA
         # Run E2E (Selenium)
