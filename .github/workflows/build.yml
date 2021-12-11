@@ -38,14 +38,20 @@ jobs:
           echo "GITHUB_EVENT_PATH is ${{ github.event_path }}"
           echo "GITHUB_WORKSPACE is ${{ github.workspace }}"
           echo "GITHUB_REF is ${{ github.ref }}"
-
-
-      - uses: actions/upload-artifact@v2
+          
+      - name: Unit Tests Artifact
+        uses: actions/upload-artifact@v2
         if: success() || failure()
         with:
-          name: TestResultsZip
-          path: D:\a\bloodPressureCheck\bloodPressureCheck\BpAcceptTests\TestResults\
-          # TODO Swap this out for an environment variable
+          name: UnitTestResults
+          path: ${{ github.workspace }}/BPCalculatorTests/TestResults/
+
+      - name: BDD Tests Artifact
+        uses: actions/upload-artifact@v2
+        if: success() || failure()
+        with:
+          name: BDDTestResults
+          path: ${{ github.workspace }}/BpAcceptTests/TestResults/
 
       - name: sonarCloudScan
         uses: sonarsource/sonarcloud-github-action@master
@@ -85,6 +91,7 @@ jobs:
 
       # TODO Deploy to QA
         # Run E2E (Selenium)
+      #needs.<Depcheck>.result to be 'success'
 
       # TODO Deploy to Staging 
         # Run performance tests (k6 cloud)
