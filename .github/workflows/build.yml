@@ -32,7 +32,7 @@ jobs:
         # restore not required as it's carried out by the previous job        
 
       - name: Run Acceptance tests      
-        run: dotnet test BpAcceptanceTests/BpAcceptanceTests.csproj --collect "Code coverage" -l:trx
+        run: dotnet test BpAcceptTests/BpAcceptTests.csproj --collect "Code coverage" -l:trx
 
       #- name: Build
       #  run: dotnet build --configuration Release --no-restore 
