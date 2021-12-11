@@ -31,7 +31,7 @@ jobs:
          dotnet add package SpecFlow.Plus.LivingDocPlugin
          dotnet tool install --global SpecFlow.Plus.LivingDoc.cli
          dotnet test BpAcceptTests/BpAcceptTests.csproj --collect "Code coverage" -l:trx
-         LivingDoc test-assembly BpAcceptTests\bin\Debug\netcoreapp3.1\BpAcceptTests.dll -t BpAcceptTests\bin\Debug\netcoreapp3.1\TestExecution.json
+         LivingDoc test-assembly *\BpAcceptTests.dll -t *\TestExecution.json
 
       #- uses: actions/cryptic-wizard/run-specflow-tests@v1.2.0
       #  with:
