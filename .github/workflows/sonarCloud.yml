@@ -1,11 +1,10 @@
-name: Build
+name: sonarCloud
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    
 jobs:
   build:
-    name: Build
+    name: SonarCloudScan
     runs-on: ubuntu-latest
     steps:
       - name: Set up JDK 11

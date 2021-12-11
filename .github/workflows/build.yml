@@ -46,11 +46,16 @@ jobs:
           path: D:\a\bloodPressureCheck\bloodPressureCheck\BpAcceptTests\TestResults\
           # TODO Swap this out for an environment variable
 
-      #- name: Specflow LivngDoc # Not able to point to correct test assembly path
-      #  run: |
-         #dotnet add package SpecFlow.Plus.LivingDocPlugin
-         #dotnet tool install --global SpecFlow.Plus.LivingDoc.cli
-         #LivingDoc test-assembly *\BpAcceptTests.dll -t *\TestExecution.json
+      - name: sonarCloudScan
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.organization=brian8719
+            -Dsonar.projectKey=brian8719_bloodPressureCheck
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
          
 
       #- name: Build # Probably safe to delete
