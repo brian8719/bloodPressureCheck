@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BPCalculator
 {
-    public class Program
+    public static class Program // Static added due to code smell S1118
     {
         public static void Main(string[] args)
         {
@@ -24,4 +24,3 @@ namespace BPCalculator
                 });
     }
 }
-//

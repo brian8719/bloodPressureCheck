@@ -47,15 +47,5 @@ namespace BPCalculatorTests
             // Assert
             Assert.AreEqual(BPCategory.Low, pressure.Category);
         }
-        //[TestMethod]
-        //[ExpectedException(typeof(ArgumentException))]
-        //public void SystolicOverRange()
-        //{
-        //    // Arrange
-        //    BloodPressure pressure = new BloodPressure();
-
-        //    // Act
-        //    pressure.Systolic = 200;
-        //}
     }
 }
