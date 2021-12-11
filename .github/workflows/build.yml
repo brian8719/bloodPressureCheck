@@ -32,7 +32,10 @@ jobs:
 
       - name: Run unit tests      
         run: dotnet test BPCalculatorTests/BPCalculatorTests.csproj --no-restore --collect "Code coverage" -l:trx
-        # restore not required as it's carried out by the previous job
+        # restore not required as it's carried out by the previous job        
+
+      - name: Run Acceptance tests      
+        run: dotnet test BpAcceptanceTests/BpAcceptanceTests.csproj --no-restore --collect "Code coverage" -l:trx
 
       #- name: Build
       #  run: dotnet build --configuration Release --no-restore 

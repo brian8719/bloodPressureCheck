@@ -46,7 +46,7 @@ namespace BPCalculator
                 }
                 else if (Diastolic >= DiastolicPreHighBand || Systolic >= SystolicPreHighBand)
                 {
-                    Console.WriteLine("Your blood pressure is Pre-High");
+                    Console.WriteLine("Your blood pressure is PreHigh");
                     return BPCategory.PreHigh;
                 }
                 else if (Diastolic >= DiastolicIdealBand || Systolic >= SystolicIdealBand)
