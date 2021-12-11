@@ -21,12 +21,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
-      #- name: Setup .NET Core SDK
-      #  uses: actions/setup-dotnet@v1.7.2
-      #  with:
-      #    dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
-          
+      
       - name: Run unit tests      
         run: dotnet test BPCalculatorTests/BPCalculatorTests.csproj --collect "Code coverage" -l:trx
         # restore not required as it's carried out by the previous job        
@@ -34,11 +29,22 @@ jobs:
       - name: Run Acceptance tests      
         run: dotnet test BpAcceptTests/BpAcceptTests.csproj --collect "Code coverage" -l:trx
 
+      - uses: actions/cryptic-wizard/run-specflow-tests@v1.2.0
+        with:
+          test-assembly-path: BpAcceptTests/bin/Release/netcoreapp3.1
+          test-assembly-dll: BpAcceptTests.dll
+          test-execution-json: TestExecution.json
+          output-html: BpAcceptTestsOut.html
+      - uses: actions/upload-artifact@v2
+        if: success() || failure()
+        with:
+          name: SpecflowTestResults
+          path: BpAcceptTestsOut.html
+
       #- name: Build
       #  run: dotnet build --configuration Release --no-restore 
       # call build with restore to get rid of project.assets.json file missing errors
       
-      # TODO BDD Tests
 
       # TODO Check Code Quality
 
