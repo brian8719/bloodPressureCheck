@@ -37,12 +37,12 @@ jobs:
         if: success() || failure()
         with:
           name: SpecflowTestResults
-          path: TestResults\*.trx
+          path: ./TestResults/*.trx
       - uses: actions/upload-artifact@v2
         if: success() || failure()
         with:
           name: SpecflowTestResults
-          path: TestResults\*\*.coverage
+          path: /*TestResults/*
 
       #- name: Build
       #  run: dotnet build --configuration Release --no-restore 
