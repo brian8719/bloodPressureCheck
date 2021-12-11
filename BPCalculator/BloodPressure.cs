@@ -6,7 +6,7 @@ namespace BPCalculator
     // BP categories
     public enum BPCategory
     {
-        [Display(Name="Low Blood Pressure")] Low,
+        [Display(Name= "Low Blood Pressure https://www2.hse.ie/conditions/low-blood-pressure-hypotension/")] Low,
         [Display(Name="Ideal Blood Pressure")]  Ideal,
         [Display(Name="Pre-High Blood Pressure")] PreHigh,
         [Display(Name ="High Blood Pressure")]  High

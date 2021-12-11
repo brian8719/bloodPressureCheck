@@ -2,7 +2,7 @@
 # based on doicker image built nightly
 # https://github.com/dependency-check/Dependency-Check_Action
 
-name: OWASP Dependency Checker       
+name: Standalone OWASP Dependency Checker       
   
 on:
   workflow_dispatch:                  # manually triggered
