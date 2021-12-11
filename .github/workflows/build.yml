@@ -29,7 +29,9 @@ jobs:
       - name: Run Acceptance tests      
         run: dotnet test BpAcceptTests/BpAcceptTests.csproj --collect "Code coverage" -l:trx
 
-      - run: LivingDoc test-assembly .\CSD\bp\BpAcceptTests\bin\Debug\netcoreapp3.1\BpAcceptTests.dll -t .\CSD\bp\BpAcceptTests\bin\Debug\netcoreapp3.1\TestExecution.json
+      - run: |
+         dotnet add package SpecFlow.Plus.LivingDocPlugin
+         LivingDoc test-assembly .\CSD\bp\BpAcceptTests\bin\Debug\netcoreapp3.1\BpAcceptTests.dll -t .\CSD\bp\BpAcceptTests\bin\Debug\netcoreapp3.1\TestExecution.json
       #- uses: actions/cryptic-wizard/run-specflow-tests@v1.2.0
       #  with:
       #    test-assembly-path: BpAcceptTests/bin/Release/netcoreapp3.1
