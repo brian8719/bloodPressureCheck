@@ -29,7 +29,7 @@ jobs:
       - name: Run Acceptance tests
         run: dotnet test BpAcceptTests/BpAcceptTests.csproj --collect "Code coverage" -l:trx
 
-      #- name: Specflow LivngDoc # Not finding path
+      #- name: Specflow LivngDoc # Not able to find test assembly path
       #  run: |
          #dotnet add package SpecFlow.Plus.LivingDocPlugin
          #dotnet tool install --global SpecFlow.Plus.LivingDoc.cli
@@ -38,15 +38,14 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: success() || failure()
         with:
-          #name: TestResults
-          path: D:\a\bloodPressureCheck\bloodPressureCheck\BpAcceptTests\TestResults\*.trx
-      - uses: actions/upload-artifact@v2
-        if: success() || failure()
-        with:
-          name: TestResults
-          path: :\a\bloodPressureCheck\bloodPressureCheck\BpAcceptTests\TestResults\*\*.coverage
+          name: TestResultsZip
+          path: D:\a\bloodPressureCheck\bloodPressureCheck\BpAcceptTests\TestResults\
+      #- uses: actions/upload-artifact@v2
+      #  if: success() || failure()
+      #  with:
+      #    path: :\a\bloodPressureCheck\bloodPressureCheck\BpAcceptTests\TestResults\*\*.coverage
 
-      #- name: Build
+      #- name: Build # Probably safe to delete
       #  run: dotnet build --configuration Release --no-restore 
       # call build with restore to get rid of project.assets.json file missing errors
       
