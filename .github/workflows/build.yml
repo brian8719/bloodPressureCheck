@@ -1,3 +1,6 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow
+# This ^ gets rid of false errors for properties name, on, env & jobs, as per https://github.com/redhat-developer/vscode-yaml/issues/397
+
 name: BuildAndTest
 
 on:
@@ -6,29 +9,28 @@ on:
       - main
 
 env:
-  AZURE_WEBAPP_NAME: BPCalculatorBOR2021   # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: 'publish'      # set this to the path to your web app project, defaults to the repository root
+  AZURE_WEBAPP_NAME: BPCalculatorBOR2021
+  AZURE_WEBAPP_NAME_STAGING: BPCalculatorBOR2021-staging
+  AZURE_WEBAPP_PACKAGE_PATH: 'publish'
   AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.BPCalculatorBOR2021_7b8c }}
-  CONFIGURATION: Release
-  DOTNET_CORE_VERSION: 5.0.x
+  
   WORKING_DIRECTORY: BPCalculator
 
 jobs:
-  build-and-deploy:
-    name: Build and Deploy
+  build-test-scan:
+    name: Build, Test and Scan
     runs-on: ubuntu-latest # windows-latest
     #environment: production
 
     steps:
       - uses: actions/checkout@v2
       
-      - name: Run unit tests      
-        run: dotnet test BPCalculatorTests/BPCalculatorTests.csproj --collect "Code coverage" -l:trx
-        # restore not required as it's carried out by the previous job        
+    # Unit and BDD Tests 
+      - name: Run Unit and BDD Tests      
+        run: |
+          dotnet test BPCalculatorTests/BPCalculatorTests.csproj --collect "Code coverage" -l:trx
+          dotnet test BpAcceptTests/BpAcceptTests.csproj --collect "Code coverage" -l:trx
 
-      - name: Run Acceptance tests
-        run: dotnet test BpAcceptTests/BpAcceptTests.csproj --collect "Code coverage" -l:trx
-          
       - name: Unit Tests Artifact
         uses: actions/upload-artifact@v2
         if: success() || failure()
@@ -43,7 +45,8 @@ jobs:
           name: BDDTestResults
           path: ${{ github.workspace }}/BpAcceptTests/TestResults/
 
-      - name: sonarCloudScan
+    # Sonar Cloud Scan
+      - name: Sonar Cloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         with:
           projectBaseDir: .
@@ -53,16 +56,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-         
 
-      #- name: Build # Probably safe to delete
-      #  run: dotnet build --configuration Release --no-restore 
-      # call build with restore to get rid of project.assets.json file missing errors
-      
-
-      # CD Section      
-      
-      - name: Depcheck
+    # Dependency Check
+      - name: Dependency Check
         uses: dependency-check/Dependency-Check_Action@main
         id: Depcheck
         with:
@@ -70,10 +66,10 @@ jobs:
           path: '.'
           format: 'HTML'    
           args: >
-            --failOnCVSS 7            
+            --failOnCVSS 7
           # fail if CVSS score (CVE scoring system) is High >=7
           
-      - name: Upload Depcheck Test results
+      - name: Upload Dependency Check Results
         uses: actions/upload-artifact@master
         with:
            name: Depcheck report
@@ -87,9 +83,17 @@ jobs:
         # Run performance tests (k6 cloud)
         # Simple PEN tests (pasive scanning)
 
+  deploy-test-swap:
+    name: Deploy to Staging, Run E2E, Swap Slots
+    needs: build-test-scan
+    environment:
+      name: Staging
+      url: http://BPcalculatorBOR2021-staging.azurewebsites.net
+    runs-on: ubuntu-latest
 
+    steps:
       - name: Publish
-        run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp' 
+        run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
 
   # Deploy to Azure Web apps
       - name: Run Azure webapp deploy action using publish profile credentials
@@ -97,8 +101,25 @@ jobs:
         with: 
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE  }}
+          slot-name: staging
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+  # Connect to Azure
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+            
+   # Set up staging as Canary for testing
+      #- name: Set Staging to take 30% of load for upcoming tests
+      #  run: |
+      #    az webapp traffic-routing set --distribution staging=30 --name bpcalculatorbor2021  --resource-group bpcalculatorbor2021_rsg
           
+
+      #- name: Run Selenium Tests
+      #  run: dotnet test ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/my
+
+    # Run k6 tests
       - name: Pull Docker image for k6
         run: docker pull loadimpact/k6
 
@@ -118,10 +139,17 @@ jobs:
 
 
       # TODO Deploy to prod If both Load tests pass, i.e swap it from staging
-        # blue/green, canary
+
+
+  # Blue/Green Deployment Strategy
+      - name: Swap Staging and Production Slots
+        run: |
+          az webapp deployment slot swap -n bpcalculatorbor2021  -g bpcalculatorbor2021_rsg --slot staging --target-slot production
+        
         
       # TODO Telemetry   
-      
+
+  # Publish Artifact of Web App
       - name: Publish Artifact of Web App
         uses: actions/upload-artifact@v1.0.0
         with:
