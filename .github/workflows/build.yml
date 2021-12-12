@@ -13,6 +13,8 @@ env:
   AZURE_WEBAPP_NAME_STAGING: BPCalculatorBOR2021-staging
   AZURE_WEBAPP_PACKAGE_PATH: 'publish'
   AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.BPCalculatorBOR2021_7b8c }}
+  AZURE_WEBAPP_PUBLISH_PROFILE_STAGING: ${{ secrets.BPCALCULATORBOR2021_STAGING }}
+  
   
   APP_NAME: BPCalculator
 
@@ -97,14 +99,20 @@ jobs:
         uses: azure/webapps-deploy@v2
         with: 
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE  }}
+          publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE_STAGING  }}
           slot-name: staging
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
 
     # Run Selenium tests
-      #- name: Run Selenium Tests
-      #  run: dotnet test ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/${{ env.APP_NAME}}/SeleniumTest.dll /Settings:SeleniumTest.runsettings --logger:"trx;LogFileName=seleniumLogs.trx"
+      - name: Run Selenium Tests
+        run: dotnet test ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/${{ env.APP_NAME}}/SeleniumTest.dll /Settings:SeleniumTest.runsettings --logger:"trx;LogFileName=seleniumLogs.trx"
+
+    # Upload results of selenium tests
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Selenium Tests Results
+          path: TestResults/selenium.trx
 
     # Run k6 tests
       - name: Pull Docker image for k6
