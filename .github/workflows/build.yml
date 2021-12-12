@@ -14,7 +14,7 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: 'publish'
   AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.BPCalculatorBOR2021_7b8c }}
   
-  WORKING_DIRECTORY: BPCalculator
+  APP_NAME: BPCalculator
 
 jobs:
   build-test-scan:
@@ -75,25 +75,22 @@ jobs:
            name: Depcheck report
            path: ${{github.workspace}}/reports
 
-      # TODO Deploy to QA
-        # Run E2E (Selenium)
-      #needs.<Depcheck>.result to be 'success'
 
-      # TODO Deploy to Staging 
-        # Run performance tests (k6 cloud)
-        # Simple PEN tests (pasive scanning)
+
 
   deploy-test-swap:
     name: Deploy to Staging, Run E2E, Swap Slots
-    needs: build-test-scan
+    needs: build-test-scan # This job will not run if Dependency check gets a high CVSS
     environment:
       name: Staging
       url: http://BPcalculatorBOR2021-staging.azurewebsites.net
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v2
+
       - name: Publish
-        run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
+        run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/${{ env.APP_NAME}}'
 
   # Deploy to Azure Web apps
       - name: Run Azure webapp deploy action using publish profile credentials
@@ -104,20 +101,10 @@ jobs:
           slot-name: staging
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
-  # Connect to Azure
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-            
-   # Set up staging as Canary for testing
-      #- name: Set Staging to take 30% of load for upcoming tests
-      #  run: |
-      #    az webapp traffic-routing set --distribution staging=30 --name bpcalculatorbor2021  --resource-group bpcalculatorbor2021_rsg
-          
 
+    # Run Selenium tests
       #- name: Run Selenium Tests
-      #  run: dotnet test ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/my
+      #  run: dotnet test ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/${{ env.APP_NAME}}/SeleniumTest.dll /Settings:SeleniumTest.runsettings --logger:"trx;LogFileName=seleniumLogs.trx"
 
     # Run k6 tests
       - name: Pull Docker image for k6
@@ -137,9 +124,43 @@ jobs:
             k6LoadReport_Get.txt
             k6LoadReport_Post.txt
 
+    # Run PEN tests (pasive scanning)
 
-      # TODO Deploy to prod If both Load tests pass, i.e swap it from staging
 
+  # Connect to Azure
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # TODO Deploy if both Load tests pass
+   # Set up staging as a Canary deployment
+      - name: Set Staging to take 30% of load for upcoming tests
+        run: |
+          az webapp traffic-routing set --distribution staging=30 --name bpcalculatorbor2021  --resource-group bpcalculatorbor2021_rsg
+
+            # Publish Artifact of Web App
+      - name: Publish Artifact of Web App
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: webapp
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+  
+  deploy-production:
+    name: Deploy to Production
+    needs: deploy-test-swap
+    environment:
+      name: Production
+      url: http://BPcalculatorBOR2021.azurewebsites.net
+    runs-on: ubuntu-latest
+
+    steps:
+  # Connect to Azure
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
   # Blue/Green Deployment Strategy
       - name: Swap Staging and Production Slots
@@ -149,9 +170,3 @@ jobs:
         
       # TODO Telemetry   
 
-  # Publish Artifact of Web App
-      - name: Publish Artifact of Web App
-        uses: actions/upload-artifact@v1.0.0
-        with:
-          name: webapp
-          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
