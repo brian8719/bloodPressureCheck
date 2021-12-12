@@ -4,6 +4,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 
 // run 2 instances of VS to do run Selenium tests against localhost
 // instance 1 : run web app e.g. on IIS Express
@@ -68,6 +69,8 @@ namespace SeleniumTest
                 // navigate to URI for temperature converter
                 // web app running on IIS express
                 driver.Navigate().GoToUrl(webAppUri);
+                
+                Thread.Sleep(20000); // give the page 20 seconds to load before testing
 
                 // get Systolic element, clear existing contents and submit new
                 IWebElement systolicElement = driver.FindElement(By.Id("BP_Systolic"));
@@ -153,6 +156,8 @@ namespace SeleniumTest
                 // navigate to URI for temperature converter
                 // web app running on IIS express
                 driver.Navigate().GoToUrl(webAppUri);
+
+                Thread.Sleep(20000); // give the page 20 seconds to load before testing
 
                 // get Systolic element, clear existing contents and submit new
                 IWebElement systolicElement = driver.FindElement(By.Id("BP_Systolic"));
