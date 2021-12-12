@@ -21,7 +21,7 @@ namespace BPCalculator.Pages
 
         public void OnGet()
         {
-            throw new NotSupportedException();
+            // Page is loaded via cshtml file
         }
     }
 }

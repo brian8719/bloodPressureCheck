@@ -18,18 +18,8 @@ namespace SeleniumTest
     [TestClass]
     public class UnitTest1
     {
-        // .runsettings file contains test run parameters
-        // e.g. URI for app
-        // test context for this run
-
-        private TestContext testContextInstance;
-
         // test harness uses this property to initliase test context
-        public TestContext TestContext
-        {
-            get { return testContextInstance; }
-            set { testContextInstance = value; }
-        }
+        public TestContext TestContext { get; set; }
 
         // URI for web app being tested
         private String webAppUri;
@@ -42,7 +32,7 @@ namespace SeleniumTest
         public void Setup()
         {
             // read URL from SeleniumTest.runsettings
-            this.webAppUri = testContextInstance.Properties["webAppUri"].ToString();
+            this.webAppUri = TestContext.Properties["webAppUri"].ToString();
             //this.webAppUri = "http://localhost:53135/";
         }
 
@@ -105,18 +95,8 @@ namespace SeleniumTest
     [TestClass]
     public class UnitTest2
     {
-        // .runsettings file contains test run parameters
-        // e.g. URI for app
-        // test context for this run
-
-        private TestContext testContextInstance;
-
         // test harness uses this property to initliase test context
-        public TestContext TestContext
-        {
-            get { return testContextInstance; }
-            set { testContextInstance = value; }
-        }
+        public TestContext TestContext { get; set; }
 
         // URI for web app being tested
         private String webAppUri;
@@ -129,7 +109,7 @@ namespace SeleniumTest
         public void Setup()
         {
             // read URL from SeleniumTest.runsettings
-            this.webAppUri = testContextInstance.Properties["webAppUri"].ToString();
+            this.webAppUri = TestContext.Properties["webAppUri"].ToString();
             //this.webAppUri = "http://localhost:53135/";
         }
 

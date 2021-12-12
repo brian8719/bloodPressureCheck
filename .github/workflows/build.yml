@@ -82,7 +82,7 @@ jobs:
     needs: build-test-scan # This job will not run if Dependency check gets a high CVSS
     environment:
       name: Staging
-      url: http://BPcalculatorBOR2021-staging.azurewebsites.net
+      url: https://BPcalculatorBOR2021-staging.azurewebsites.net
     runs-on: ubuntu-latest
 
     steps:
@@ -133,6 +133,14 @@ jobs:
             k6LoadReport_Post.txt
 
     # Run PEN tests (pasive scanning)
+      - name: Run low level PEN Test
+        run: docker run owasp/zap2docker-weekly zap-baseline.py -t https://BPcalculatorBOR2021-staging.azurewebsites.net -r zapReport.html
+
+      - name: Publish Artifact of PEN test 
+        uses: actions/upload-artifact@v2
+        with:
+          name: ZAP PEN Test report
+          path: zapReport.html
 
 
   # Connect to Azure
