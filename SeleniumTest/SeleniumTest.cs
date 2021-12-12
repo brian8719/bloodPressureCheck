@@ -53,7 +53,7 @@ namespace SeleniumTest
                 chromeDriverPath = ".";                 // for IDE
             }
 
-            using (IWebDriver driver = new ChromeDriver(@".\bin\Debug\netcoreapp3.1\chromedriver.exe"))
+            using (IWebDriver driver = new ChromeDriver(@"./bin/Debug/netcoreapp3.1"))
             {
                 // any exception below results in a test fail
 
@@ -133,7 +133,7 @@ namespace SeleniumTest
                 chromeDriverPath = ".";                 // for IDE
             }
 
-            using (IWebDriver driver = new ChromeDriver(@".\bin\Debug\netcoreapp3.1\chromedriver.exe"))
+            using (IWebDriver driver = new ChromeDriver(@"./bin/Debug/netcoreapp3.1"))
             {
                 // any exception below results in a test fail
 
