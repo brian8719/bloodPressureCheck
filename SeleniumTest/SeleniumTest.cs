@@ -53,7 +53,7 @@ namespace SeleniumTest
                 chromeDriverPath = ".";                 // for IDE
             }
 
-            using (IWebDriver driver = new ChromeDriver(chromeDriverPath))
+            using (IWebDriver driver = new ChromeDriver(@".\bin\Debug\netcoreapp3.1\chromedriver.exe"))
             {
                 // any exception below results in a test fail
 
@@ -126,13 +126,14 @@ namespace SeleniumTest
         public void TestFeatuteText()
         {
 
-            String chromeDriverPath = Environment.GetEnvironmentVariable("ChromeWebDriver");
+            //String chromeDriverPath = Environment.GetEnvironmentVariable("ChromeWebDriver");
+            String chromeDriverPath = "\\bin\\Debug\\netcoreapp3.1";
             if (chromeDriverPath is null)
             {
                 chromeDriverPath = ".";                 // for IDE
             }
 
-            using (IWebDriver driver = new ChromeDriver(chromeDriverPath))
+            using (IWebDriver driver = new ChromeDriver(@".\bin\Debug\netcoreapp3.1\chromedriver.exe"))
             {
                 // any exception below results in a test fail
 
