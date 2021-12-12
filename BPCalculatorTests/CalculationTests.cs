@@ -15,10 +15,24 @@ namespace BPCalculatorTests
 
             // Act
             pressure.Systolic = 170;
-            pressure.Diastolic = 40;
+            pressure.Diastolic = 90;
 
             // Assert
             Assert.AreEqual(BPCategory.High, pressure.Category);
+        }
+
+        [TestMethod]
+        public void InPreHighRange()
+        {
+            // Arrange
+            BloodPressure pressure = new BloodPressure();
+
+            // Act
+            pressure.Systolic = 130;
+            pressure.Diastolic = 89;
+
+            // Assert
+            Assert.AreEqual(BPCategory.PreHigh, pressure.Category);
         }
 
         [TestMethod]

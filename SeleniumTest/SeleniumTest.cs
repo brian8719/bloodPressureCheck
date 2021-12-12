@@ -3,6 +3,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 // run 2 instances of VS to do run Selenium tests against localhost
 // instance 1 : run web app e.g. on IIS Express
@@ -12,6 +13,7 @@ using System;
 
 namespace SeleniumTest
 {
+    [ExcludeFromCodeCoverage]
     [TestClass]
     public class UnitTest1
     {
@@ -96,7 +98,7 @@ namespace SeleniumTest
             }
         }        
     }
-
+    [ExcludeFromCodeCoverage]
     [TestClass]
     public class UnitTest2
     {
