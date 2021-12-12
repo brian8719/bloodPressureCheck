@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<RunSettings>    
+  <!-- Parameters used by tests at runtime -->  
+  <TestRunParameters>  
+    <Parameter name="webAppUri" value="http://BPcalculatorBOR2021-staging.azurewebsites.net" />  
+  </TestRunParameters>  
+</RunSettings> 
