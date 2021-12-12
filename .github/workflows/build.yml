@@ -27,62 +27,62 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-    # Unit and BDD Tests 
-      - name: Run Unit and BDD Tests      
-        run: |
-          dotnet test BPCalculatorTests/BPCalculatorTests.csproj --collect "Code coverage" -l:trx
-          dotnet test BpAcceptTests/BpAcceptTests.csproj --collect "Code coverage" -l:trx
+    ## Unit and BDD Tests 
+    #  - name: Run Unit and BDD Tests      
+    #    run: |
+    #      dotnet test BPCalculatorTests/BPCalculatorTests.csproj --collect "Code coverage" -l:trx
+    #      dotnet test BpAcceptTests/BpAcceptTests.csproj --collect "Code coverage" -l:trx
 
-      - name: Unit Tests Artifact
-        uses: actions/upload-artifact@v2
-        if: success() || failure()
-        with:
-          name: UnitTestResults
-          path: ${{ github.workspace }}/BPCalculatorTests/TestResults/
+    #  - name: Unit Tests Artifact
+    #    uses: actions/upload-artifact@v2
+    #    if: success() || failure()
+    #    with:
+    #      name: UnitTestResults
+    #      path: ${{ github.workspace }}/BPCalculatorTests/TestResults/
 
-      - name: BDD Tests Artifact
-        uses: actions/upload-artifact@v2
-        if: success() || failure()
-        with:
-          name: BDDTestResults
-          path: ${{ github.workspace }}/BpAcceptTests/TestResults/
+    #  - name: BDD Tests Artifact
+    #    uses: actions/upload-artifact@v2
+    #    if: success() || failure()
+    #    with:
+    #      name: BDDTestResults
+    #      path: ${{ github.workspace }}/BpAcceptTests/TestResults/
 
-    # Sonar Cloud Scan
-      - name: Sonar Cloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
-        with:
-          projectBaseDir: .
-          args: >
-            -Dsonar.organization=brian8719
-            -Dsonar.projectKey=brian8719_bloodPressureCheck
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    ## Sonar Cloud Scan
+    #  - name: Sonar Cloud Scan
+    #    uses: sonarsource/sonarcloud-github-action@master
+    #    with:
+    #      projectBaseDir: .
+    #      args: >
+    #        -Dsonar.organization=brian8719
+    #        -Dsonar.projectKey=brian8719_bloodPressureCheck
+    #    env:
+    #      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-    # Dependency Check
-      - name: Dependency Check
-        uses: dependency-check/Dependency-Check_Action@main
-        id: Depcheck
-        with:
-          project: 'BloodPressureChecker'
-          path: '.'
-          format: 'HTML'    
-          args: >
-            --failOnCVSS 7
-          # fail if CVSS score (CVE scoring system) is High >=7
+    ## Dependency Check
+    #  - name: Dependency Check
+    #    uses: dependency-check/Dependency-Check_Action@main
+    #    id: Depcheck
+    #    with:
+    #      project: 'BloodPressureChecker'
+    #      path: '.'
+    #      format: 'HTML'    
+    #      args: >
+    #        --failOnCVSS 7
+    #      # fail if CVSS score (CVE scoring system) is High >=7
           
-      - name: Upload Dependency Check Results
-        uses: actions/upload-artifact@master
-        with:
-           name: Depcheck report
-           path: ${{github.workspace}}/reports
+    #  - name: Upload Dependency Check Results
+    #    uses: actions/upload-artifact@master
+    #    with:
+    #       name: Depcheck report
+    #       path: ${{github.workspace}}/reports
 
 
 
 
   deploy-test-swap:
     name: Deploy to Staging, Run E2E, Swap Slots
-    needs: build-test-scan # This job will not run if Dependency check gets a high CVSS
+    #needs: build-test-scan # This job will not run if Dependency check gets a high CVSS
     environment:
       name: Staging
       url: http://BPcalculatorBOR2021-staging.azurewebsites.net
@@ -102,11 +102,6 @@ jobs:
           publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE_STAGING  }}
           slot-name: staging
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-
-      
-      - uses: nanasess/setup-chromedriver@v1
-        with:
-          chromedriver-version: '88.0.4324.96'
 
           
     # Run Selenium tests
