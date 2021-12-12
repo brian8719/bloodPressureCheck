@@ -1,0 +1,36 @@
+name: Azure login test
+
+on:
+  workflow_dispatch:
+  
+env:
+  AZURE_WEBAPP_NAME: BPCalculatorBOR2021
+  AZURE_WEBAPP_NAME_STAGING: BPCalculatorBOR2021-staging
+  AZURE_WEBAPP_PACKAGE_PATH: 'publish'
+  AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.BPCalculatorBOR2021_7b8c }}
+  AZURE_WEBAPP_PUBLISH_PROFILE_STAGING: ${{ secrets.BPCALCULATORBOR2021_STAGING }}
+   
+  APP_NAME: BPCalculator
+
+jobs:
+  azureLogin:
+    steps:
+  # Connect to Azure
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - uses: actions/checkout@v2
+
+      - name: Publish
+        run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/${{ env.APP_NAME}}'
+
+  # Deploy to Azure Web apps
+      - name: Run Azure webapp deploy action using staging credentials
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE_STAGING  }}
+          slot-name: staging
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
