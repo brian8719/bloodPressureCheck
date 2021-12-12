@@ -101,15 +101,15 @@ jobs:
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
           
-    ## Run Selenium tests
-    #  - name: Run Selenium Tests
-    #    run: dotnet test ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/${{ env.APP_NAME}}/SeleniumTest.dll /Settings:SeleniumTest.runsettings --logger:"trx;LogFileName=seleniumLogs.trx"
+    # Run Selenium tests
+      - name: Run Selenium Tests
+        run: dotnet test ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/${{ env.APP_NAME}}/SeleniumTest.dll /Settings:SeleniumTest.runsettings --logger:"trx;LogFileName=seleniumLogs.trx"
 
     # Upload results of selenium tests
-      #- uses: actions/upload-artifact@v2
-      #  with:
-      #    name: Selenium Tests Results
-      #    path: TestResults/selenium.trx
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Selenium Tests Results
+          path: TestResults/selenium.trx
 
     # Run k6 tests
       - name: Pull Docker image for k6
