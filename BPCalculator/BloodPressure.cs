@@ -6,7 +6,7 @@ namespace BPCalculator
     // BP categories
     public enum BPCategory
     {
-        [Display(Name= "Low Blood Pressure https://www2.hse.ie/conditions/low-blood-pressure-hypotension/")] Low,
+        [Display(Name= "Low Blood Pressure")] Low,
         [Display(Name="Ideal Blood Pressure")]  Ideal,
         [Display(Name="Pre-High Blood Pressure")] PreHigh,
         [Display(Name ="High Blood Pressure")]  High
@@ -41,22 +41,18 @@ namespace BPCalculator
                 // implement as part of project
                 if ( Diastolic >= DiastolicHighBand || Systolic >= SystolicHighBand)
                 {
-                    Console.WriteLine("Your blood pressure is High");
                     return BPCategory.High;
                 }
                 else if (Diastolic >= DiastolicPreHighBand || Systolic >= SystolicPreHighBand)
                 {
-                    Console.WriteLine("Your blood pressure is PreHigh");
                     return BPCategory.PreHigh;
                 }
                 else if (Diastolic >= DiastolicIdealBand || Systolic >= SystolicIdealBand)
                 {
-                    Console.WriteLine("Your blood pressure is Ideal");
                     return BPCategory.Ideal;
                 }
                 else
                 {
-                    Console.WriteLine("Your blood pressure is Low");
                     return BPCategory.Low;
                 }
             }

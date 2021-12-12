@@ -28,61 +28,59 @@ jobs:
       - uses: actions/checkout@v2
       
     ## Unit and BDD Tests 
-    #  - name: Run Unit and BDD Tests      
-    #    run: |
-    #      dotnet test BPCalculatorTests/BPCalculatorTests.csproj --collect "Code coverage" -l:trx
-    #      dotnet test BpAcceptTests/BpAcceptTests.csproj --collect "Code coverage" -l:trx
+      - name: Run Unit and BDD Tests      
+        run: |
+          dotnet test BPCalculatorTests/BPCalculatorTests.csproj --collect "Code coverage" -l:trx
+          dotnet test BpAcceptTests/BpAcceptTests.csproj --collect "Code coverage" -l:trx
 
-    #  - name: Unit Tests Artifact
-    #    uses: actions/upload-artifact@v2
-    #    if: success() || failure()
-    #    with:
-    #      name: UnitTestResults
-    #      path: ${{ github.workspace }}/BPCalculatorTests/TestResults/
+      - name: Unit Tests Artifact
+        uses: actions/upload-artifact@v2
+        if: success() || failure()
+        with:
+          name: UnitTestResults
+          path: ${{ github.workspace }}/BPCalculatorTests/TestResults/
 
-    #  - name: BDD Tests Artifact
-    #    uses: actions/upload-artifact@v2
-    #    if: success() || failure()
-    #    with:
-    #      name: BDDTestResults
-    #      path: ${{ github.workspace }}/BpAcceptTests/TestResults/
+      - name: BDD Tests Artifact
+        uses: actions/upload-artifact@v2
+        if: success() || failure()
+        with:
+          name: BDDTestResults
+          path: ${{ github.workspace }}/BpAcceptTests/TestResults/
 
-    ## Sonar Cloud Scan
-    #  - name: Sonar Cloud Scan
-    #    uses: sonarsource/sonarcloud-github-action@master
-    #    with:
-    #      projectBaseDir: .
-    #      args: >
-    #        -Dsonar.organization=brian8719
-    #        -Dsonar.projectKey=brian8719_bloodPressureCheck
-    #    env:
-    #      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    # Sonar Cloud Scan
+      - name: Sonar Cloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.organization=brian8719
+            -Dsonar.projectKey=brian8719_bloodPressureCheck
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-    ## Dependency Check
-    #  - name: Dependency Check
-    #    uses: dependency-check/Dependency-Check_Action@main
-    #    id: Depcheck
-    #    with:
-    #      project: 'BloodPressureChecker'
-    #      path: '.'
-    #      format: 'HTML'    
-    #      args: >
-    #        --failOnCVSS 7
-    #      # fail if CVSS score (CVE scoring system) is High >=7
+    # Dependency Check
+      - name: Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        id: Depcheck
+        with:
+          project: 'BloodPressureChecker'
+          path: '.'
+          format: 'HTML'    
+          args: >
+            --failOnCVSS 7
+          # fail if CVSS score (CVE scoring system) is High >=7
           
-    #  - name: Upload Dependency Check Results
-    #    uses: actions/upload-artifact@master
-    #    with:
-    #       name: Depcheck report
-    #       path: ${{github.workspace}}/reports
-
-
+      - name: Upload Dependency Check Results
+        uses: actions/upload-artifact@master
+        with:
+           name: Depcheck report
+           path: ${{github.workspace}}/reports
 
 
   deploy-test-swap:
     name: Deploy to Staging, Run E2E, Swap Slots
-    #needs: build-test-scan # This job will not run if Dependency check gets a high CVSS
+    needs: build-test-scan # This job will not run if Dependency check gets a high CVSS
     environment:
       name: Staging
       url: http://BPcalculatorBOR2021-staging.azurewebsites.net
@@ -95,7 +93,7 @@ jobs:
         run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/${{ env.APP_NAME}}'
 
   # Deploy to Azure Web apps
-      - name: Run Azure webapp deploy action using publish profile credentials
+      - name: Run Azure webapp deploy action using staging credentials
         uses: azure/webapps-deploy@v2
         with: 
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
@@ -104,15 +102,15 @@ jobs:
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
           
-    # Run Selenium tests
-      - name: Run Selenium Tests
-        run: dotnet test ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/${{ env.APP_NAME}}/SeleniumTest.dll /Settings:SeleniumTest.runsettings --logger:"trx;LogFileName=seleniumLogs.trx"
+    ## Run Selenium tests
+    #  - name: Run Selenium Tests
+    #    run: dotnet test ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/${{ env.APP_NAME}}/SeleniumTest.dll /Settings:SeleniumTest.runsettings --logger:"trx;LogFileName=seleniumLogs.trx"
 
     # Upload results of selenium tests
-      - uses: actions/upload-artifact@v2
-        with:
-          name: Selenium Tests Results
-          path: TestResults/selenium.trx
+      #- uses: actions/upload-artifact@v2
+      #  with:
+      #    name: Selenium Tests Results
+      #    path: TestResults/selenium.trx
 
     # Run k6 tests
       - name: Pull Docker image for k6
