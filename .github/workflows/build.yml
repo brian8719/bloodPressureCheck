@@ -28,16 +28,6 @@ jobs:
 
       - name: Run Acceptance tests
         run: dotnet test BpAcceptTests/BpAcceptTests.csproj --collect "Code coverage" -l:trx
-
-      - name: Check env variables values
-        run: |
-          echo "GITHUB_ACTION_PATH is ${{ github.action_path }}"
-          echo "GITHUB_WORKFLOW is ${{ github.workflow }}"
-          echo "GITHUB_ACTION is ${{ github.action }}"
-          echo "GITHUB_REPOSITORY is ${{ github.repository }}"
-          echo "GITHUB_EVENT_PATH is ${{ github.event_path }}"
-          echo "GITHUB_WORKSPACE is ${{ github.workspace }}"
-          echo "GITHUB_REF is ${{ github.ref }}"
           
       - name: Unit Tests Artifact
         uses: actions/upload-artifact@v2
@@ -96,11 +86,6 @@ jobs:
       # TODO Deploy to Staging 
         # Run performance tests (k6 cloud)
         # Simple PEN tests (pasive scanning)
-        
-      # TODO Deploy to prod
-        # blue/green, canary
-        
-      # TODO Telemetry
 
 
       - name: Publish
@@ -114,8 +99,30 @@ jobs:
           publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE  }}
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
           
+      - name: Pull Docker image for k6
+        run: docker pull loadimpact/k6
+
+      - name: Run k6 Get Load test
+        run: docker run -i loadimpact/k6 run - <BpPerfomanceTests/k6LoadTest_Get.js > k6LoadReport_Get.txt
+
+      - name: Run k6 Post Load test
+        run: docker run -i loadimpact/k6 run - <BpPerfomanceTests/k6LoadTest_Post.js > k6LoadReport_Post.txt
                   
-      - name: Publish Artifacts
+      - name: Publish Artifact of k6 Get Load Reports 
+        uses: actions/upload-artifact@v2
+        with:
+          name: k6LoadReports
+          path: |
+            k6LoadReport_Get.txt
+            k6LoadReport_Post.txt
+
+
+      # TODO Deploy to prod If both Load tests pass, i.e swap it from staging
+        # blue/green, canary
+        
+      # TODO Telemetry   
+      
+      - name: Publish Artifact of Web App
         uses: actions/upload-artifact@v1.0.0
         with:
           name: webapp
