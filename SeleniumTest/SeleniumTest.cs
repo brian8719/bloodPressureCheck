@@ -53,7 +53,13 @@ namespace SeleniumTest
                 chromeDriverPath = ".";                 // for IDE
             }
 
-            using (IWebDriver driver = new ChromeDriver(chromeDriverPath))
+            var chrome_options = new ChromeOptions();
+            chrome_options.AddArguments("--headless");
+            chrome_options.AddArguments("--no-sandbox");
+            chrome_options.AddArguments("--disable-dev-shm-usage");
+            //driver = webdriver.Chrome("/path/to/your_chrome_driver_dir/chromedriver, chrome_options = chrome_options);
+
+            using (IWebDriver driver = new ChromeDriver(chromeDriverPath,chrome_options))
             {
                 // any exception below results in a test fail
 
@@ -126,14 +132,19 @@ namespace SeleniumTest
         public void TestFeatuteText()
         {
 
-            //String chromeDriverPath = Environment.GetEnvironmentVariable("ChromeWebDriver");
-            String chromeDriverPath = "\\bin\\Debug\\netcoreapp3.1";
+            String chromeDriverPath = Environment.GetEnvironmentVariable("ChromeWebDriver");
             if (chromeDriverPath is null)
             {
                 chromeDriverPath = ".";                 // for IDE
             }
 
-            using (IWebDriver driver = new ChromeDriver(@"../SeleniumTest/bin/Debug/netcoreapp3.1"))
+            var chrome_options = new ChromeOptions();
+            chrome_options.AddArguments("--headless");
+            chrome_options.AddArguments("--no-sandbox");
+            chrome_options.AddArguments("--disable-dev-shm-usage");
+            //driver = webdriver.Chrome("/path/to/your_chrome_driver_dir/chromedriver, chrome_options = chrome_options);
+
+            using (IWebDriver driver = new ChromeDriver(chromeDriverPath, chrome_options))
             {
                 // any exception below results in a test fail
 
