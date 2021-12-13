@@ -23,7 +23,7 @@
                 <span asp-validation-for="BP.Diastolic" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Submit" class="btn btn-primary"/>
+                <input type="submit" value="Submit" class="btn btn-primary" onclick="document.getElementById('bonusSpiel').style.display = 'block' "/>
             </div>
             @if (ViewData.ModelState.IsValid)
             {
@@ -32,6 +32,46 @@
                 </div>
             }
         </form>
+        <div>
+            <input type="submit" value="More Info" class="btn btn-primary" onclick="document.getElementById('bonusSpiel').style.display = 'block' " />
+        </div>
+        <div id="bonusSpiel" style="margin-top: 15px; width: max-content; display: none">
+            @switch (Model.BP.Category)
+            {
+                case BPCategory.Low:
+                    <p id="spiel">
+                        Your blood pressure is a little on the low side. It's not the end of the world, there's plenty you can do to get it <a href="https://www2.hse.ie/conditions/low-blood-pressure-hypotension/">back to normal</a>
+                    </p>
+                    break;
+
+                case BPCategory.Ideal:
+                    <p id="spiel">
+                        Your blood pressure is just in the sweet spot, fair play. It's a good idea to keep an eye on it though <br />
+                        <a href="https://www.hickeyspharmacies.ie/services/blood-pressure-screening/">Click here to see how</a>
+                    </p>
+                    break;
+
+                case BPCategory.PreHigh:
+                    <p id="spiel">
+                        Your blood pressure is en route to being high. Don't fall victim to the
+                        <a href="https://www.thejournal.ie/high-blood-pressure-heart-problems-3528156-Aug2017/">'Silent Killer'</a>
+                    </p>
+                    break;
+
+                case BPCategory.High:
+                    <p id="spiel">
+                        Your blood pressure is high. There's some tips on what you can do to decrease your risk  <a href="https://www.hickeyspharmacies.ie/conditions-wellbeing/blood-pressure/">here</a>
+                    </p>
+                    break;
+
+                default:
+                    break;
+            }
+            <div id="outro">
+                <br /><br /> Remember, it's never a good idea to diagnose yourself over the internet.
+                <br />To find out more about what your result means, please talk to a qualified medical professional.
+            </div>
+        </div>
     </div>
 </div>
 
