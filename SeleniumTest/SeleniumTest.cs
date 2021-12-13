@@ -150,6 +150,9 @@ namespace SeleniumTest
                 // submit the form
                 driver.FindElement(By.Id("form1")).Submit();
 
+                // click the info button
+                driver.FindElement(By.Id("infoBtn")).Click();
+
                 // explictly wait for result with "BPvalue" item
                 IWebElement spielElement = new WebDriverWait(driver, TimeSpan.FromSeconds(10))
                     .Until(c => c.FindElement(By.Id("spiel")));
