@@ -50,7 +50,6 @@ namespace SeleniumTest
             chrome_options.AddArguments("--headless");
             chrome_options.AddArguments("--no-sandbox");
             chrome_options.AddArguments("--disable-dev-shm-usage");
-            //driver = webdriver.Chrome("/path/to/your_chrome_driver_dir/chromedriver, chrome_options = chrome_options);
 
             using (IWebDriver driver = new ChromeDriver(chromeDriverPath,chrome_options))
             {
@@ -127,7 +126,6 @@ namespace SeleniumTest
             chrome_options.AddArguments("--headless");
             chrome_options.AddArguments("--no-sandbox");
             chrome_options.AddArguments("--disable-dev-shm-usage");
-            //driver = webdriver.Chrome("/path/to/your_chrome_driver_dir/chromedriver, chrome_options = chrome_options);
 
             using (IWebDriver driver = new ChromeDriver(chromeDriverPath, chrome_options))
             {
