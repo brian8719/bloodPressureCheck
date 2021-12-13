@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow
+# This ^ gets rid of false errors for properties name, on, env & jobs, as per https://github.com/redhat-developer/vscode-yaml/issues/397
+
+name: PushFeatureToAzure
+
+on:
+  push:
+    branches:
+      - bonusFeature
+      
+env:
+  AZURE_WEBAPP_NAME: BPCalculatorBOR2021
+  AZURE_WEBAPP_NAME_STAGING: BPCalculatorBOR2021-staging
+  AZURE_WEBAPP_PACKAGE_PATH: 'publish'
+  AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.BPCalculatorBOR2021_7b8c }}
+  AZURE_WEBAPP_PUBLISH_PROFILE_STAGING: ${{ secrets.BPCALCULATORBOR2021_STAGING }}
+   
+  APP_NAME: BPCalculator
+
+jobs:
+  pushFeature:
+    name: Push Feature Branch To Azure
+    environment:
+      name: Staging
+      url: https://BPcalculatorBOR2021-staging.azurewebsites.net
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: bonusFeature
+
+      - name: Publish
+        run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/${{ env.APP_NAME}}'
+
+  # Deploy to Azure Web apps
+      - name: Run Azure webapp deploy action using staging credentials
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE_STAGING  }}
+          slot-name: staging
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/${{ env.APP_NAME}}
