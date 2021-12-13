@@ -112,7 +112,7 @@ jobs:
         if: success() || failure()
         with:
           name: Selenium Tests Results
-          path: TestResults/selenium.trx
+          path: TestResults/seleniumLogs.trx
 
     # Run k6 tests
       - name: Pull Docker image for k6

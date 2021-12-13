@@ -33,7 +33,7 @@
             }
         </form>
         <div>
-            <input type="submit" value="More Info" class="btn btn-primary" onclick="document.getElementById('bonusSpiel').style.display = 'block' " />
+            <input id="infoBtn" type="submit" value="More Info" class="btn btn-primary" onclick="document.getElementById('bonusSpiel').style.display = 'block' " />
         </div>
         <div id="bonusSpiel" style="margin-top: 15px; width: max-content; display: none">
             @switch (Model.BP.Category)
